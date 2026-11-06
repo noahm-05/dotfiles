@@ -16,9 +16,29 @@ How it works, and what every tool and plugin is for: [docs/how-it-works.md](docs
 
 ## Install
 
+### Quick install (Linux and macOS)
+
+```sh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/noahm-05/dotfiles/main/install.sh)"
+```
+
+The script asks **1) GUI machine** or **2) Headless**, then installs the base packages (it asks for your `sudo` password), installs chezmoi, applies the dotfiles and sets zsh as your login shell. chezmoi will also ask for your git name and email. On a GUI Debian/Ubuntu machine it also installs Ghostty from the free [griffo.io](https://deb-free.griffo.io) apt mirror, checking the repo's signing-key fingerprint first.
+
+Skip the menu with `DOTFILES_GUI=1` (GUI) or `DOTFILES_GUI=0` (headless):
+
+```sh
+DOTFILES_GUI=0 sh -c "$(curl -fsSL https://raw.githubusercontent.com/noahm-05/dotfiles/main/install.sh)"
+```
+
+macOS needs Homebrew installed first. The script only supports apt-based Linux; for Windows, use the steps below. Read the script before running it: [install.sh](install.sh).
+
+### Manual install
+
 Every OS follows the same three steps: install `git` and chezmoi, install the base packages from this repo's `packages/` folder (needs root, so it is a separate step), then apply. chezmoi asks three questions once: is this a GUI machine, your git name, your git email.
 
 The commands below clone the repo into `~/.local/share/chezmoi`, which is where `packages/` ends up. The repo is public and cloned over HTTPS, so no GitHub account, `gh` login or SSH key is needed.
+
+Run each command on its own. Pasting several at once makes the later lines get typed into chezmoi's prompts.
 
 ### Debian / Ubuntu
 
@@ -85,7 +105,21 @@ chezmoi init --promptDefaults \
 
 `ansifilter` strips color and cursor escape codes from tmux pane logs. Everything else (mise, the CLI tools, zsh plugins, kickstart.nvim, the Linux font) is fetched by `chezmoi apply`, so it is not in these files. Add or remove a base package by editing the file for that OS. These files are not deployed to your home directory.
 
-On Linux GUI machines, Ghostty is not in Debian's repos; install it by your preferred method. Run `fc-cache -f` once after the font is fetched.
+**Ghostty on Debian/Ubuntu** (GUI machines) is not in Debian's repos. `install.sh` adds the free griffo.io mirror; to do it by hand:
+
+```sh
+sudo apt install -y gpg
+curl -fsSL https://deb-free.griffo.io/EA0F721D231FDD3A0A17B9AC7808B4DD62C41256.asc -o /tmp/griffo.asc
+gpg --show-keys --with-fingerprint /tmp/griffo.asc   # must show EA0F 721D 231F DD3A 0A17  B9AC 7808 B4DD 62C4 1256
+sudo install -d -m 0755 /etc/apt/keyrings
+sudo gpg --dearmor --yes -o /etc/apt/keyrings/deb-free.griffo.io.gpg /tmp/griffo.asc
+echo "deb [signed-by=/etc/apt/keyrings/deb-free.griffo.io.gpg] https://deb-free.griffo.io/apt $(. /etc/os-release; echo $VERSION_CODENAME) main" | sudo tee /etc/apt/sources.list.d/deb-free.griffo.io.list
+sudo apt update && sudo apt install -y ghostty
+```
+
+This is a single maintainer's repo, and the free mirror lags upstream by up to two months. Run `fc-cache -f` once after the font is fetched.
+
+Finally, make zsh your login shell with `chsh -s "$(command -v zsh)"` and log in again (`install.sh` does this for you).
 
 ## Day to day
 
@@ -173,7 +207,7 @@ docs/                         documentation (not deployed)
 
 ## Known gaps
 
-Tracked in [docs/build-notes.md](docs/build-notes.md): Ghostty install on Debian 13, Nerd Font on Windows, mise tool resolution on Windows, Windows Terminal honoring fragment schemes, and whether to keep the Starship `tun0` module.
+Tracked in [docs/build-notes.md](docs/build-notes.md): Nerd Font on Windows, mise tool resolution on Windows, Windows Terminal honoring fragment schemes, and whether to keep the Starship `tun0` module.
 
 ## Migrating from the old dots TUI (ThinkPad)
 

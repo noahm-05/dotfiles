@@ -52,3 +52,7 @@ fragment `schemes`; Nerd Font on Windows; keep/cut Starship `tun0`.
   so it runs after the mise config is written.
 - Ghostty theme is rendered from the palette by `dot_config/ghostty/themes/create_tinted-theming.tmpl`
   (tinty has no prebuilt files for the custom scheme); `run_after_tinty-apply.sh.tmpl` removed.
+
+## Post-build additions (after review)
+- `install.sh` (repo root, not deployed): GUI/headless menu bootstrap for apt Linux and macOS. This departs from the spec's "no custom programs" rule at the user's request. It adds the griffo.io free apt mirror (fingerprint-checked) to install Ghostty on Debian, which resolves the "Ghostty on Debian 13" open item with a third-party source.
+- Windows has no equivalent script yet; README documents the winget steps.

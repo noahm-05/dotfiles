@@ -1,0 +1,5 @@
+return {
+{{- range $k, $v := .palette }}
+  {{ $k }} = "{{ $v }}",
+{{- end }}
+}

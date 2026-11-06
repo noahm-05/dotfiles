@@ -1,6 +1,5 @@
 #!/bin/sh
 # writes ~/.config/ghostty/themes/tinted-theming so Ghostty's first launch has a theme
-# scheme hash: {{ include ".chezmoidata/palette.toml" | sha256sum }}
 PATH="$HOME/.local/bin:$PATH"
 command -v mise >/dev/null || { echo "mise missing: skipping tinty apply" >&2; exit 0; }
 mise exec -- sh -c 'command -v tinty >/dev/null && tinty install && tinty apply base16-isotope-noah || echo "tinty not ready: re-run chezmoi apply after mise install" >&2'

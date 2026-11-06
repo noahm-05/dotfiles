@@ -29,8 +29,6 @@ against a real home directory.
 ## Deviations worth knowing
 - Installer is `run_onchange_after_install-mise.*` (not `run_onchange_install-mise.*`) so
   the mise config is written before `mise install` runs.
-- Added `run_after_tinty-apply.sh.tmpl` (plan ambiguity 5 assumption): tiny wrapper, no
-  logic beyond calling tinty. Remove if it counts as a custom program.
 - Added `dot_config/nvim/plugin/custom.lua` (one line). Stock kickstart `init.lua` cannot
   be edited, but nvim sources `plugin/*.lua` after it, so this loads `lua/custom` without
   touching kickstart.
@@ -39,10 +37,6 @@ against a real home directory.
   `chezmoi apply` still finishes cleanly.
 
 ## Risks (unverified)
-- tinty with a custom scheme: tinted-terminal ships prebuilt themes for official schemes
-  only, so `tinty apply base16-isotope-noah` may find no Ghostty theme file. If so, the
-  fallback is a chezmoi template rendering `~/.config/ghostty/themes/tinted-theming`
-  straight from palette.toml. Check on the ThinkPad.
 - `mise` registry names (btop on Windows, sesh, tinty via `github:`) not checked.
 - `mini.base16` via `require` relies on kickstart's installed mini.nvim being loadable by
   lazy.nvim on demand.
@@ -50,3 +44,11 @@ against a real home directory.
 ## Spec open items (left open)
 Ghostty on Debian 13; tinty x86_64 asset; mise tools on Windows; Windows Terminal
 fragment `schemes`; Nerd Font on Windows; keep/cut Starship `tun0`.
+
+## Revision history
+- PATH deviation: spec step 3 says "mise shims"; this build uses `mise activate zsh` only.
+  Non-interactive callers (nvim LSPs, scripts, cron) will not see mise tools.
+- Installer renamed `run_onchange_after_install-mise.*` (spec layout: `run_onchange_install-mise.*`)
+  so it runs after the mise config is written.
+- Ghostty theme is rendered from the palette by `dot_config/ghostty/themes/create_tinted-theming.tmpl`
+  (tinty has no prebuilt files for the custom scheme); `run_after_tinty-apply.sh.tmpl` removed.

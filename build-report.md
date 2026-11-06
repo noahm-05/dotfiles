@@ -3,7 +3,7 @@ chezmoi source repo on branch pipeline/v1 (not pushed), phases 1-5 and 7 as comm
 
 ## Deviations from plan.md
 - Installer named run_onchange_after_install-mise.* so the mise config exists first.
-- Added run_after_tinty-apply.sh.tmpl, plugin/custom.lua; plugins/kickstart use archive externals.
+- Added plugin/custom.lua; plugins/kickstart use archive externals.
 - Full list and assumptions in BUILD_NOTES.md.
 
 ## Acceptance check result

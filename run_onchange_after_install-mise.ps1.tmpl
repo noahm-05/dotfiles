@@ -1,4 +1,4 @@
-# tool list hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+# tool list hash: {{ includeTemplate "dot_config/mise/config.toml.tmpl" . | sha256sum }}
 $ErrorActionPreference = 'Stop'
 if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
   winget install --id jdx.mise -e --accept-source-agreements --accept-package-agreements

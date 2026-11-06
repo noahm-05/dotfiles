@@ -1,6 +1,6 @@
 #!/bin/sh
 # runs after files are written (mise config must exist); re-runs when the tool list changes
-# tool list hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+# tool list hash: {{ includeTemplate "dot_config/mise/config.toml.tmpl" . | sha256sum }}
 set -eu
 export PATH="$HOME/.local/bin:$PATH"
 if ! command -v mise >/dev/null; then

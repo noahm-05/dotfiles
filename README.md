@@ -18,13 +18,13 @@ How it works, and what every tool and plugin is for: [docs/how-it-works.md](docs
 
 Every OS follows the same three steps: install `git` and chezmoi, install the base packages from this repo's `packages/` folder (needs root, so it is a separate step), then apply. chezmoi asks three questions once: is this a GUI machine, your git name, your git email.
 
-The commands below clone `noahm-05/dotfiles` into `~/.local/share/chezmoi`, which is where `packages/` ends up.
+The commands below clone the repo into `~/.local/share/chezmoi`, which is where `packages/` ends up. The repo is public and cloned over HTTPS, so no GitHub account, `gh` login or SSH key is needed.
 
 ### Debian / Ubuntu
 
 ```sh
 sudo apt install -y git curl
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init noahm-05/dotfiles
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init https://github.com/noahm-05/dotfiles.git
 xargs -a ~/.local/share/chezmoi/packages/apt.txt sudo apt install -y
 ~/.local/bin/chezmoi apply
 ```
@@ -33,7 +33,7 @@ xargs -a ~/.local/share/chezmoi/packages/apt.txt sudo apt install -y
 
 ```sh
 brew install git chezmoi
-chezmoi init noahm-05/dotfiles
+chezmoi init https://github.com/noahm-05/dotfiles.git
 brew bundle --file ~/.local/share/chezmoi/packages/Brewfile
 brew bundle --file ~/.local/share/chezmoi/packages/Brewfile.gui   # GUI machines: Ghostty + font
 chezmoi apply
@@ -46,7 +46,7 @@ Homebrew itself must already be installed: https://brew.sh.
 ```powershell
 winget install Git.Git twpayne.chezmoi
 # open a new terminal so git and chezmoi are on PATH
-chezmoi init noahm-05/dotfiles
+chezmoi init https://github.com/noahm-05/dotfiles.git
 winget import -i "$HOME\.local\share\chezmoi\packages\winget.json" --accept-package-agreements --accept-source-agreements
 chezmoi apply
 ```
@@ -55,7 +55,7 @@ Install JetBrainsMono Nerd Font by hand (no automated method yet), then set the 
 
 ### Offline / flash drive
 
-Copy the repo to the drive, then use `--source` in place of `noahm-05/dotfiles` and run the package step from the drive's `packages/` folder:
+Copy the repo to the drive, then use `--source` in place of the repo URL and run the package step from the drive's `packages/` folder:
 
 ```sh
 chezmoi init --source /media/<stick>/dotfiles
@@ -71,7 +71,7 @@ Replace the `init` step with:
 chezmoi init --promptDefaults \
   --promptBool "GUI machine (Ghostty, tinty, font)=false" \
   --promptString "Git name=Your Name,Git email=you@example.com" \
-  noahm-05/dotfiles
+  https://github.com/noahm-05/dotfiles.git
 ```
 
 ### What the package files contain

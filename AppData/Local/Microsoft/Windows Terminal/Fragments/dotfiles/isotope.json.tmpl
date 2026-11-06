@@ -1,0 +1,39 @@
+{{- /* ANSI mapping: standard base16-shell (0=00, 1=08, 2=0B, 3=0A, 4=0D, 5=0E, 6=0C, 7=05, 8=03, 15=07) */ -}}
+{{- $p := .palette -}}
+{
+  "profiles": [
+    {
+      "name": "PowerShell (dotfiles)",
+      "guid": "{6f0c3a52-9d1e-4b7a-8c25-3e1d7b9a4f10}",
+      "commandline": "pwsh.exe",
+      "colorScheme": "Isotope",
+      "font": { "face": "JetBrainsMono Nerd Font" },
+      "cursorShape": "bar"
+    }
+  ],
+  "schemes": [
+    {
+      "name": "Isotope",
+      "background": "{{ $p.base00 }}",
+      "foreground": "{{ $p.base05 }}",
+      "cursorColor": "{{ $p.base05 }}",
+      "selectionBackground": "{{ $p.base02 }}",
+      "black": "{{ $p.base00 }}",
+      "red": "{{ $p.base08 }}",
+      "green": "{{ $p.base0B }}",
+      "yellow": "{{ $p.base0A }}",
+      "blue": "{{ $p.base0D }}",
+      "purple": "{{ $p.base0E }}",
+      "cyan": "{{ $p.base0C }}",
+      "white": "{{ $p.base05 }}",
+      "brightBlack": "{{ $p.base03 }}",
+      "brightRed": "{{ $p.base08 }}",
+      "brightGreen": "{{ $p.base0B }}",
+      "brightYellow": "{{ $p.base0A }}",
+      "brightBlue": "{{ $p.base0D }}",
+      "brightPurple": "{{ $p.base0E }}",
+      "brightCyan": "{{ $p.base0C }}",
+      "brightWhite": "{{ $p.base07 }}"
+    }
+  ]
+}

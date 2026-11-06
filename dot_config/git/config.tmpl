@@ -1,0 +1,20 @@
+{{ if or .name .email -}}
+[user]
+{{- if .name }}
+	name = {{ .name | quote }}
+{{- end }}
+{{- if .email }}
+	email = {{ .email | quote }}
+{{- end }}
+{{ end -}}
+[init]
+	defaultBranch = main
+[core]
+	pager = sh -c 'command -v delta >/dev/null && exec delta || exec ${PAGER:-less}'
+[interactive]
+	diffFilter = sh -c 'command -v delta >/dev/null && exec delta --color-only || exec cat'
+[delta]
+	navigate = true
+	syntax-theme = ansi
+[merge]
+	conflictstyle = zdiff3

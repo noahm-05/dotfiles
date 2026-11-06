@@ -1,0 +1,10 @@
+#!/bin/sh
+# runs after files are written (mise config must exist); re-runs when the tool list changes
+# tool list hash: {{ includeTemplate "dot_config/mise/config.toml.tmpl" . | sha256sum }}
+set -eu
+export PATH="$HOME/.local/bin:$PATH"
+if ! command -v mise >/dev/null; then
+  command -v curl >/dev/null || { echo "curl missing: install the base layer, then re-run chezmoi apply" >&2; exit 0; }
+  curl -fsSL https://mise.run | sh
+fi
+mise install --yes

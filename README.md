@@ -1,59 +1,184 @@
 # dotfiles
 
-chezmoi repo for Linux, macOS and Windows. See `BUILD_NOTES.md` for assumptions
-and unverified items.
+A [chezmoi](https://www.chezmoi.io) repo that turns a Linux, macOS or Windows machine into one consistent terminal environment with a single command. It is built for daily IT/security work and HTB/CPTS study, and it **degrades gracefully**: on a bare box with only `zsh` and `git`, the shell still loads with zero errors and a fallback prompt.
+
+| | |
+|---|---|
+| **Shell** | zsh (Linux, macOS), PowerShell 7 (Windows) |
+| **Prompt** | [Starship](https://starship.rs), one line, shows only what matters right now |
+| **Terminal** | [Ghostty](https://ghostty.org) (Linux, macOS), Windows Terminal |
+| **Theme** | Isotope (base16), one palette file feeds every renderer |
+| **Multiplexer** | tmux, default `Ctrl-B` prefix, toggleable pane logging |
+| **Editor** | nano by default, Neovim ([kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)) ready |
+| **CLI tools** | installed and updated by [mise](https://mise.jdx.dev) from one list |
+
+How it works, and what every tool and plugin is for: [docs/how-it-works.md](docs/how-it-works.md).
 
 ## Install
 
-Linux / macOS (needs `curl`):
+Every OS follows the same three steps: install `git` and chezmoi, install the base packages from this repo's `packages/` folder (needs root, so it is a separate step), then apply. chezmoi asks three questions once: is this a GUI machine, your git name, your git email.
 
-    sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply noahm-05/dotfiles
+The commands below clone `noahm-05/dotfiles` into `~/.local/share/chezmoi`, which is where `packages/` ends up.
 
-Bare box without curl (pick one; none of these were tested here):
+### Debian / Ubuntu
 
-    apt install chezmoi                       # if your release packages it
-    wget -qO- get.chezmoi.io | sh             # wget instead of curl
-    # offline: copy a chezmoi release binary (or .deb) from another machine, then
-    chezmoi init --apply --source /media/<stick>/dotfiles
+```sh
+sudo apt install -y git curl
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init noahm-05/dotfiles
+xargs -a ~/.local/share/chezmoi/packages/apt.txt sudo apt install -y
+~/.local/bin/chezmoi apply
+```
 
-Windows (PowerShell): `winget install twpayne.chezmoi`, then
-`chezmoi init --apply noahm-05/dotfiles`.
+### macOS
 
-Non-interactive: `chezmoi init --apply --promptBool gui=true --promptString name=...,email=...`.
+```sh
+brew install git chezmoi
+chezmoi init noahm-05/dotfiles
+brew bundle --file ~/.local/share/chezmoi/packages/Brewfile
+brew bundle --file ~/.local/share/chezmoi/packages/Brewfile.gui   # GUI machines: Ghostty + font
+chezmoi apply
+```
 
-Day to day: `chezmoi update` (configs + plugin refresh), `mise up` (tools).
+Homebrew itself must already be installed: https://brew.sh.
 
-## Base layer (run once, needs root; nothing installs this for you)
+### Windows (PowerShell)
 
-    # Debian / Ubuntu
-    sudo apt install zsh git curl tmux nano unzip ansifilter rlwrap ncdu python3 pipx
-    # macOS
-    brew install zsh git curl tmux nano unzip ansifilter rlwrap ncdu python3 pipx
-    # Windows
-    winget install Microsoft.PowerShell Git.Git twpayne.chezmoi
+```powershell
+winget install Git.Git twpayne.chezmoi
+# open a new terminal so git and chezmoi are on PATH
+chezmoi init noahm-05/dotfiles
+winget import -i "$HOME\.local\share\chezmoi\packages\winget.json" --accept-package-agreements --accept-source-agreements
+chezmoi apply
+```
 
-Then `chezmoi apply` installs mise and runs `mise install` (re-runs only when
-`dot_config/mise/config.toml.tmpl` changes).
+Install JetBrainsMono Nerd Font by hand (no automated method yet), then set the "PowerShell (dotfiles)" profile as the Windows Terminal default once.
 
-## GUI machines (gui=true)
+### Offline / flash drive
 
-- Ghostty: Debian 13 install method is an open item (not in Debian repos);
-  record it here once found. macOS: `brew install --cask ghostty`.
-- Font: Linux, fetched by chezmoi (JetBrainsMono Nerd Font tarball into
-  `~/.local/share/fonts`; run `fc-cache -f` once). macOS:
-  `brew install --cask font-jetbrains-mono-nerd-font`. Windows: open item
-  (winget package vs. zip).
-- Before the first apply on the old ThinkPad: remove the dotbot symlinks and
-  take a snapper snapshot.
+Copy the repo to the drive, then use `--source` in place of `noahm-05/dotfiles` and run the package step from the drive's `packages/` folder:
 
-## Windows Terminal
+```sh
+chezmoi init --source /media/<stick>/dotfiles
+xargs -a /media/<stick>/dotfiles/packages/apt.txt sudo apt install -y
+chezmoi apply
+```
 
-The fragment adds the Isotope scheme and a pwsh profile. Set that profile as
-default by hand once (fragments cannot change the default).
+### Non-interactive (servers, VMs, CI)
 
-## Open items (unresolved on purpose)
+Replace the `init` step with:
 
-Ghostty on Debian 13; tinty x86_64 via mise `github:` backend; mise resolving
-yazi/eza/delta/lazygit/doggo/trippy on Windows; Windows Terminal honoring
-fragment `schemes`; Nerd Font on Windows; keep or cut the Starship `tun0`
-module after a week.
+```sh
+chezmoi init --promptDefaults \
+  --promptBool "GUI machine (Ghostty, tinty, font)=false" \
+  --promptString "Git name=Your Name,Git email=you@example.com" \
+  noahm-05/dotfiles
+```
+
+### What the package files contain
+
+| File | Used by | Contents |
+|---|---|---|
+| `packages/apt.txt` | Debian / Ubuntu | `zsh git curl tmux nano unzip ansifilter rlwrap ncdu python3 pipx` |
+| `packages/Brewfile` | macOS | the same list, plus chezmoi |
+| `packages/Brewfile.gui` | macOS, GUI machines | Ghostty and JetBrainsMono Nerd Font |
+| `packages/winget.json` | Windows | PowerShell 7, Git, chezmoi |
+
+`ansifilter` strips color and cursor escape codes from tmux pane logs. Everything else (mise, the CLI tools, zsh plugins, kickstart.nvim, the Linux font) is fetched by `chezmoi apply`, so it is not in these files. Add or remove a base package by editing the file for that OS. These files are not deployed to your home directory.
+
+On Linux GUI machines, Ghostty is not in Debian's repos; install it by your preferred method. Run `fc-cache -f` once after the font is fetched.
+
+## Day to day
+
+```sh
+chezmoi update   # pull the repo, apply configs, refresh plugins
+mise up          # update CLI tools
+chezmoi diff     # preview what an apply would change
+dots             # cd into this repo's local clone
+reload           # restart zsh
+```
+
+Machine-only settings go in `~/.config/zsh/local.zsh`. It is sourced if present and never committed.
+
+## What you get
+
+### CLI tools (mise)
+
+| Tool | Use |
+|---|---|
+| fzf, zoxide | fuzzy finder; `cd` that learns (`z proj`, `zi`) |
+| ripgrep, fd | fast grep and find |
+| bat, eza | `cat` and `ls` with highlighting, git status and tree view |
+| yazi | file manager with previews (`y` cd's on exit) |
+| jq, doggo, trippy | JSON, DNS lookups, traceroute + ping TUI |
+| btop, tealdeer | system monitor; example-first man pages (`tldr`) |
+| neovim, lazygit, delta | editor, git TUI (`lg`), readable diffs |
+| starship, sesh | prompt; tmux/zoxide session picker |
+| tinty | theme switcher (GUI machines only) |
+
+Windows skips sesh and tinty.
+
+### Aliases and functions
+
+No alias ever shadows a builtin, and each is defined only if its tool exists.
+
+`ll` `la` `lt` (eza) · `lg` (lazygit) · `..` `...` · `ports` · `ipa` · `dots` · `reload`
+`y` (yazi) · `tun0` (VPN IP) · `serve [port]` · `listen [port]` · `urlenc` / `urldec` · `bwf` (rbw picker)
+
+### Key bindings
+
+| Keys | Action |
+|---|---|
+| `Ctrl-B` | tmux prefix |
+| `Ctrl-R` / `Ctrl-T` / `Alt-C` | fzf history / insert path / cd |
+| `Tab` | fzf-tab fuzzy completion |
+| `prefix` `P` | toggle pane logging to `~/logs/` (status bar shows `● REC`) |
+| `prefix` `T` | sesh session picker |
+| `prefix` `\|` / `-` | split right / below |
+| `prefix` `r` | reload tmux config |
+| `Ctrl-Space` | unused, left to macOS input switching |
+
+## Repository layout
+
+```
+.chezmoi.toml.tmpl            first-run prompts (gui, name, email)
+.chezmoidata/palette.toml     the one copy of the Isotope palette
+.chezmoiexternal.toml.tmpl    zsh plugins, kickstart.nvim, Nerd Font
+.chezmoiignore.tmpl           per-OS and gui/headless file filtering
+run_onchange_after_install-mise.*   installs mise, runs `mise install`
+dot_zshenv                    sets XDG vars and ZDOTDIR (the only file in ~)
+dot_config/                   zsh, tmux, starship, git, mise, yazi, nano, nvim, ghostty, tinty
+dot_local/share/tinted-theming/     custom base16 scheme
+Documents/PowerShell/         PowerShell profile (Windows)
+AppData/Local/.../Fragments/  Windows Terminal color scheme + profile
+docs/                         documentation (not deployed)
+```
+
+## Customizing
+
+- **Add or remove a CLI tool:** edit `dot_config/mise/config.toml.tmpl`, then `chezmoi apply`. The installer re-runs when that file changes.
+- **Change the palette:** edit `.chezmoidata/palette.toml`, then `chezmoi apply`. Ghostty, Windows Terminal, tinty and Neovim all re-render from it.
+- **Neovim changes:** put them in `dot_config/nvim/lua/custom/`. kickstart.nvim is an external and is never edited.
+- **Switch the default editor:** change `EDITOR`/`VISUAL` in `dot_config/zsh/dot_zshrc`.
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| Shell prompt looks plain | Starship isn't installed yet. Run `mise install`, open a new shell. |
+| `mise: command not found` after apply | Open a new shell; mise installs to `~/.local/bin`. |
+| `chezmoi apply` warns `curl missing` | Install the base packages (see Install), then re-run `chezmoi apply`. |
+| Tools missing in scripts / nvim LSPs | mise is activated for interactive shells only (no shims). |
+| Ghostty can't find the theme | `gui` was false at init. Re-run `chezmoi init` and answer yes. |
+| Over SSH, colors or backspace are wrong | From Ghostty's shell: `infocmp -x xterm-ghostty \| ssh host -- tic -x -` |
+
+## Known gaps
+
+Tracked in [docs/build-notes.md](docs/build-notes.md): Ghostty install on Debian 13, Nerd Font on Windows, mise tool resolution on Windows, Windows Terminal honoring fragment schemes, and whether to keep the Starship `tun0` module.
+
+## Migrating from the old dots TUI (ThinkPad)
+
+Remove the old dotbot symlinks in `~` and take a snapper snapshot **before** the first `chezmoi init --apply`. chezmoi will not silently overwrite files, but a half-migrated home is miserable to debug.
+
+## Status
+
+Verified: `chezmoi init --apply` on Linux with `gui=true` and `gui=false` in a throwaway home, interactive zsh without errors, all mise tools resolving. Not yet verified: macOS, Windows, bare Debian VM, tmux logging with real `ansifilter`, Ghostty on screen.

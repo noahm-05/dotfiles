@@ -1,0 +1,10 @@
+{{- /* Written once; tinty overwrites it on scheme switch. ANSI mapping as in the Windows Terminal fragment. */ -}}
+{{- $p := .palette -}}
+{{- $ansi := list "base00" "base08" "base0B" "base0A" "base0D" "base0E" "base0C" "base05" "base03" "base08" "base0B" "base0A" "base0D" "base0E" "base0C" "base07" -}}
+{{- range $i, $k := $ansi }}
+palette = {{ $i }}={{ index $p $k }}
+{{- end }}
+background = {{ $p.base00 }}
+foreground = {{ $p.base05 }}
+cursor-color = {{ $p.base05 }}
+selection-background = {{ $p.base02 }}

@@ -1,0 +1,8 @@
+system: "base16"
+name: "Isotope Noah"
+author: "Jan T. Sott (blue lifted for contrast)"
+variant: "dark"
+palette:
+{{- range $k, $v := .palette }}
+  {{ $k }}: "{{ $v | trimPrefix "#" }}"
+{{- end }}

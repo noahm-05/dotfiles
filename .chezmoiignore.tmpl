@@ -12,17 +12,17 @@ spec.md
 .config/ghostty
 .config/tinted-theming
 .local/share
-run_onchange_after_install-mise.sh
-run_after_tinty-apply.sh
+install-mise.sh
+tinty-apply.sh
 {{ else }}
 Documents
 AppData
-run_onchange_after_install-mise.ps1
+install-mise.ps1
 {{ end }}
 {{ if not .gui }}
 .config/ghostty
 .config/tinted-theming
 .local/share/tinted-theming
 .local/share/fonts
-run_after_tinty-apply.sh
+tinty-apply.sh
 {{ end }}

@@ -14,53 +14,78 @@ A [chezmoi](https://www.chezmoi.io) repo that turns a Linux, macOS or Windows ma
 
 How it works, and what every tool and plugin is for: [docs/how-it-works.md](docs/how-it-works.md).
 
-## Quick start
+## Install
 
-Install the base layer first (see [Requirements](#requirements)), then:
+Every OS follows the same three steps: install `git` and chezmoi, install the base packages from this repo's `packages/` folder (needs root, so it is a separate step), then apply. chezmoi asks three questions once: is this a GUI machine, your git name, your git email.
+
+The commands below clone `noahm-05/dotfiles` into `~/.local/share/chezmoi`, which is where `packages/` ends up.
+
+### Debian / Ubuntu
 
 ```sh
-# Linux / macOS
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply noahm-05/dotfiles
+sudo apt install -y git curl
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init noahm-05/dotfiles
+xargs -a ~/.local/share/chezmoi/packages/apt.txt sudo apt install -y
+~/.local/bin/chezmoi apply
 ```
+
+### macOS
+
+```sh
+brew install git chezmoi
+chezmoi init noahm-05/dotfiles
+brew bundle --file ~/.local/share/chezmoi/packages/Brewfile
+brew bundle --file ~/.local/share/chezmoi/packages/Brewfile.gui   # GUI machines: Ghostty + font
+chezmoi apply
+```
+
+Homebrew itself must already be installed: https://brew.sh.
+
+### Windows (PowerShell)
 
 ```powershell
-# Windows (PowerShell)
-winget install twpayne.chezmoi
-chezmoi init --apply noahm-05/dotfiles
+winget install Git.Git twpayne.chezmoi
+# open a new terminal so git and chezmoi are on PATH
+chezmoi init noahm-05/dotfiles
+winget import -i "$HOME\.local\share\chezmoi\packages\winget.json" --accept-package-agreements --accept-source-agreements
+chezmoi apply
 ```
 
-chezmoi asks three questions once: is this a GUI machine, your git name, your git email. Everything else is automatic. Open a new shell when it finishes.
+Install JetBrainsMono Nerd Font by hand (no automated method yet), then set the "PowerShell (dotfiles)" profile as the Windows Terminal default once.
 
-Offline or from a flash drive:
+### Offline / flash drive
+
+Copy the repo to the drive, then use `--source` in place of `noahm-05/dotfiles` and run the package step from the drive's `packages/` folder:
 
 ```sh
-chezmoi init --apply --source /media/<stick>/dotfiles
+chezmoi init --source /media/<stick>/dotfiles
+xargs -a /media/<stick>/dotfiles/packages/apt.txt sudo apt install -y
+chezmoi apply
 ```
 
-Non-interactive (servers, CI, VMs):
+### Non-interactive (servers, VMs, CI)
+
+Replace the `init` step with:
 
 ```sh
-chezmoi init --apply --promptDefaults \
+chezmoi init --promptDefaults \
   --promptBool "GUI machine (Ghostty, tinty, font)=false" \
   --promptString "Git name=Your Name,Git email=you@example.com" \
   noahm-05/dotfiles
 ```
 
-## Requirements
+### What the package files contain
 
-The base layer needs root and is **not** installed by this repo. Everything else comes from mise.
+| File | Used by | Contents |
+|---|---|---|
+| `packages/apt.txt` | Debian / Ubuntu | `zsh git curl tmux nano unzip ansifilter rlwrap ncdu python3 pipx` |
+| `packages/Brewfile` | macOS | the same list, plus chezmoi |
+| `packages/Brewfile.gui` | macOS, GUI machines | Ghostty and JetBrainsMono Nerd Font |
+| `packages/winget.json` | Windows | PowerShell 7, Git, chezmoi |
 
-| OS | Command |
-|---|---|
-| Debian / Ubuntu | `sudo apt install zsh git curl tmux nano unzip ansifilter rlwrap ncdu python3 pipx` |
-| macOS | `brew install zsh git curl tmux nano unzip ansifilter rlwrap ncdu python3 pipx` |
-| Windows | `winget install Microsoft.PowerShell Git.Git twpayne.chezmoi` |
+`ansifilter` strips color and cursor escape codes from tmux pane logs. Everything else (mise, the CLI tools, zsh plugins, kickstart.nvim, the Linux font) is fetched by `chezmoi apply`, so it is not in these files. Add or remove a base package by editing the file for that OS. These files are not deployed to your home directory.
 
-GUI machines (`gui = true`) also want Ghostty and a Nerd Font:
-
-- **Linux:** the font is fetched by chezmoi into `~/.local/share/fonts` (run `fc-cache -f` once). Ghostty is not in Debian's repos; install it by your preferred method.
-- **macOS:** `brew install --cask ghostty font-jetbrains-mono-nerd-font`
-- **Windows:** install JetBrainsMono Nerd Font manually (no automated method yet).
+On Linux GUI machines, Ghostty is not in Debian's repos; install it by your preferred method. Run `fc-cache -f` once after the font is fetched.
 
 ## Day to day
 
@@ -141,7 +166,7 @@ docs/                         documentation (not deployed)
 |---|---|
 | Shell prompt looks plain | Starship isn't installed yet. Run `mise install`, open a new shell. |
 | `mise: command not found` after apply | Open a new shell; mise installs to `~/.local/bin`. |
-| `chezmoi apply` warns `curl missing` | Install the base layer, then re-run `chezmoi apply`. |
+| `chezmoi apply` warns `curl missing` | Install the base packages (see Install), then re-run `chezmoi apply`. |
 | Tools missing in scripts / nvim LSPs | mise is activated for interactive shells only (no shims). |
 | Ghostty can't find the theme | `gui` was false at init. Re-run `chezmoi init` and answer yes. |
 | Over SSH, colors or backspace are wrong | From Ghostty's shell: `infocmp -x xterm-ghostty \| ssh host -- tic -x -` |

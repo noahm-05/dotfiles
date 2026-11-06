@@ -1,0 +1,11 @@
+zsh
+git
+curl
+tmux
+nano
+unzip
+ansifilter
+rlwrap
+ncdu
+python3
+pipx

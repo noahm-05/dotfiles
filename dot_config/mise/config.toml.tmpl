@@ -1,0 +1,23 @@
+[tools]
+fzf = "latest"
+zoxide = "latest"
+ripgrep = "latest"
+fd = "latest"
+bat = "latest"
+eza = "latest"
+yazi = "latest"
+jq = "latest"
+btop = "latest"
+tealdeer = "latest"
+neovim = "latest"
+starship = "latest"
+lazygit = "latest"
+delta = "latest"
+doggo = "latest"
+trippy = "latest"
+{{ if ne .chezmoi.os "windows" -}}
+sesh = "latest"
+{{ end -}}
+{{ if and .gui (ne .chezmoi.os "windows") -}}
+"github:tinted-theming/tinty" = "latest"
+{{ end -}}

@@ -1,0 +1,7 @@
+# tool list hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+$ErrorActionPreference = 'Stop'
+if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
+  winget install --id jdx.mise -e --accept-source-agreements --accept-package-agreements
+  $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')
+}
+mise install --yes

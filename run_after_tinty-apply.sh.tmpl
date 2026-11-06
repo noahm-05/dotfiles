@@ -1,0 +1,7 @@
+#!/bin/sh
+# writes ~/.config/ghostty/themes/tinted-theming so Ghostty's first launch has a theme
+# scheme hash: {{ include ".chezmoidata/palette.toml" | sha256sum }}
+PATH="$HOME/.local/bin:$PATH"
+command -v mise >/dev/null && command -v tinty >/dev/null || eval "$(mise activate sh 2>/dev/null)" 2>/dev/null
+command -v tinty >/dev/null || { echo "tinty not installed yet: re-run chezmoi apply after mise install" >&2; exit 0; }
+tinty install && tinty apply base16-isotope-noah

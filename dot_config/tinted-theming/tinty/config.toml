@@ -1,0 +1,9 @@
+shell = "sh -c '{}'"
+default-scheme = "base16-isotope-noah"
+
+[[items]]
+path = "https://github.com/tinted-theming/tinted-terminal"
+name = "tinted-terminal"
+themes-dir = "themes/ghostty"
+hook = "mkdir -p ~/.config/ghostty/themes && cp -f %f ~/.config/ghostty/themes/tinted-theming && killall -SIGUSR2 ghostty"
+supported-systems = ["base16"]

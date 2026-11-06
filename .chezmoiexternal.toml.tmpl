@@ -1,0 +1,24 @@
+{{- /* archive externals: no git needed, refreshed by `chezmoi update` every week */ -}}
+{{ if ne .chezmoi.os "windows" -}}
+{{ range $name, $repo := dict "fzf-tab" "Aloxaf/fzf-tab" "zsh-autopair" "hlissner/zsh-autopair" "zsh-syntax-highlighting" "zsh-users/zsh-syntax-highlighting" -}}
+[".config/zsh/plugins/{{ $name }}"]
+    type = "archive"
+    url = "https://github.com/{{ $repo }}/archive/HEAD.tar.gz"
+    stripComponents = 1
+    refreshPeriod = "168h"
+
+{{ end -}}
+{{- /* overlaid by dot_config/nvim/{palette.lua.tmpl,plugin,lua/custom} */ -}}
+[".config/nvim"]
+    type = "archive"
+    url = "https://github.com/nvim-lua/kickstart.nvim/archive/HEAD.tar.gz"
+    stripComponents = 1
+    refreshPeriod = "168h"
+{{ end -}}
+{{ if and .gui (eq .chezmoi.os "linux") -}}
+[".local/share/fonts/JetBrainsMonoNerd"]
+    type = "archive"
+    url = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
+    include = ["*.ttf"]
+    refreshPeriod = "720h"
+{{ end -}}

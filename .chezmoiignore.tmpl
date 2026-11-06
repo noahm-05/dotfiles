@@ -1,0 +1,28 @@
+README.md
+BUILD_NOTES.md
+build-report.md
+plan.md
+spec.md
+{{ if eq .chezmoi.os "windows" }}
+.zshenv
+.config/zsh
+.config/tmux
+.config/nano
+.config/nvim
+.config/ghostty
+.config/tinted-theming
+.local/share
+run_onchange_after_install-mise.sh
+run_after_tinty-apply.sh
+{{ else }}
+Documents
+AppData
+run_onchange_after_install-mise.ps1
+{{ end }}
+{{ if not .gui }}
+.config/ghostty
+.config/tinted-theming
+.local/share/tinted-theming
+.local/share/fonts
+run_after_tinty-apply.sh
+{{ end }}

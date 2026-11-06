@@ -1,0 +1,50 @@
+# 1. options
+setopt AUTO_CD INTERACTIVE_COMMENTS NO_BEEP
+export EDITOR=nano VISUAL=nano
+
+# 2. history
+HISTSIZE=100000 SAVEHIST=100000
+HISTFILE=$XDG_STATE_HOME/zsh/history
+mkdir -p ${HISTFILE:h}
+setopt EXTENDED_HISTORY SHARE_HISTORY HIST_IGNORE_SPACE HIST_IGNORE_ALL_DUPS
+
+# 3. PATH (mise is activated below; shims are not used)
+typeset -U path
+path=($HOME/.local/bin $path /usr/sbin)
+
+# 4. completion: full check once a day, cached otherwise
+autoload -Uz compinit
+_zcd=$XDG_CACHE_HOME/zsh/zcompdump
+mkdir -p ${_zcd:h}
+if [[ -n $_zcd(N.mh-24) ]]; then compinit -C -d $_zcd; else compinit -d $_zcd; fi
+unset _zcd
+
+# 5. tool inits, each guarded (mise first so the others are on PATH)
+(( $+commands[mise] ))     && eval "$(mise activate zsh)"
+(( $+commands[zoxide] ))   && eval "$(zoxide init zsh)"
+(( $+commands[fzf] ))      && source <(fzf --zsh)
+(( $+commands[starship] )) && eval "$(starship init zsh)"
+if (( $+commands[bat] )); then
+  export BAT_THEME=ansi MANPAGER="sh -c 'col -bx | bat -l man -p'"
+fi
+
+# aliases + functions (after tool inits so their guards see mise's PATH)
+source $ZDOTDIR/aliases.zsh
+source $ZDOTDIR/functions.zsh
+
+# 6. plugins, load order matters: syntax-highlighting last
+for p in fzf-tab/fzf-tab.plugin.zsh zsh-autopair/autopair.zsh zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
+  if [[ -r $ZDOTDIR/plugins/$p ]]; then source $ZDOTDIR/plugins/$p; fi
+done
+unset p
+
+# 7. fallback prompt
+(( $+commands[starship] )) || PROMPT='%F{blue}%~%f %(?.%F{green}.%F{red})❯%f '
+
+# 8. rbw ssh agent (XDG_RUNTIME_DIR is unset on macOS)
+if (( $+commands[rbw] )) && [[ -n $XDG_RUNTIME_DIR ]]; then
+  export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/rbw/ssh-agent-socket
+fi
+
+# machine-only overrides, never committed
+if [[ -r $ZDOTDIR/local.zsh ]]; then source $ZDOTDIR/local.zsh; fi

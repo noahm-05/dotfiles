@@ -1,9 +1,12 @@
+# Ghostty does not allow comments on the same line as a setting
 font-family = JetBrainsMono Nerd Font
 font-size = 12
-theme = tinted-theming                    # file written by the tinty hook
+# theme file is rendered by chezmoi (ghostty/themes/create_tinted-theming.tmpl); tinty may overwrite it
+theme = tinted-theming
 cursor-style = bar
 cursor-style-blink = true
 shell-integration-features = ssh-terminfo,ssh-env
-macos-option-as-alt = true                # makes Alt-C (fzf cd) work on Mac
+# makes Alt-C (fzf cd) work on Mac
+macos-option-as-alt = true
 window-padding-x = 6
 window-padding-y = 4

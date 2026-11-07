@@ -21,3 +21,6 @@ function y {
   if ($cwd -and (Test-Path -LiteralPath $cwd -PathType Container)) { Set-Location -LiteralPath $cwd }
   Remove-Item -Path $tmp
 }
+
+# elevated or Start-menu launches open in System32; go home instead
+if ($PWD.Path -eq "$env:SystemRoot\System32") { Set-Location ~ }

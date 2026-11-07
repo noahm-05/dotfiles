@@ -135,4 +135,4 @@ tmux uses the default `Ctrl-B` prefix. `prefix |` and `prefix -` split panes, `p
 
 ## Status
 
-Tested on Debian 13 (headless and GNOME desktop in a VM) and macOS (Apple Silicon). Windows is not tested yet.
+Tested on Debian 13 (headless and GNOME desktop in a VM), macOS (Apple Silicon) and Windows 11.

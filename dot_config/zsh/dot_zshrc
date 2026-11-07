@@ -11,6 +11,8 @@ setopt EXTENDED_HISTORY SHARE_HISTORY HIST_IGNORE_SPACE HIST_IGNORE_ALL_DUPS
 # 3. PATH (mise is activated below; shims are not used)
 typeset -U path
 path=($HOME/.local/bin $path /usr/sbin)
+# Homebrew: ~/.zprofile is ignored with ZDOTDIR, and Dock-launched terminals start with a bare PATH
+[[ -d /opt/homebrew/bin ]] && path=(/opt/homebrew/bin /opt/homebrew/sbin $path)
 
 # 4. completion: full check once a day, cached otherwise
 autoload -Uz compinit

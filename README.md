@@ -88,7 +88,7 @@ On other machines, `chezmoi update` pulls and applies, and `mise up` updates the
 |---|---|---|
 | Headless (SSH) | `sudo apt install pinentry-curses` (or `pinentry-tty`) | `rbw config set pinentry pinentry-curses` |
 | Linux desktop | `sudo apt install pinentry-gnome3` | `rbw config set pinentry pinentry-gnome3` |
-| macOS | `brew install pinentry-mac` | `rbw config set pinentry pinentry-mac` |
+| macOS | Already installed with rbw (terminal prompt). For the native dialog: `brew install pinentry-mac` | `rbw config set pinentry pinentry-mac` |
 
 ### Editors
 

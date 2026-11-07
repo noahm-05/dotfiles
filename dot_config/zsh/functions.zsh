@@ -21,3 +21,7 @@ bwf() {
 	e=$(rbw list | fzf) || return
 	rbw get "$e" | $clip
 }
+
+# Esc Esc: prepend sudo to the line (or the last command if empty)
+sudo-line() { [[ -z $BUFFER ]] && BUFFER=$history[$((HISTCMD-1))]; [[ $BUFFER == sudo\ * ]] || BUFFER="sudo $BUFFER"; CURSOR=$#BUFFER; }
+zle -N sudo-line && bindkey '\e\e' sudo-line

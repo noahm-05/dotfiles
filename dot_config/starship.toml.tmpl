@@ -23,9 +23,11 @@ min_time = 2000
 [status]
 disabled = false
 
+{{ if eq .chezmoi.os "linux" -}}
 # optional: VPN IP while tun0 is up (keep or cut after a week)
 [custom.tun0]
 when = "ip link show tun0 >/dev/null 2>&1"
 command = "ip -4 -br addr show tun0 | awk '{sub(/\\/.*/,\"\",$3); print $3}'"
 format = "[$output]($style) "
 style = "bold blue"
+{{ end -}}

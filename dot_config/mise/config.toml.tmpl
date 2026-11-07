@@ -7,7 +7,6 @@ bat = "latest"
 eza = "latest"
 yazi = "latest"
 jq = "latest"
-btop = "latest"
 tealdeer = "latest"
 neovim = "latest"
 starship = "latest"
@@ -17,8 +16,11 @@ doggo = "latest"
 "aqua:fujiapple852/trippy" = "latest"
 {{ if ne .chezmoi.os "windows" -}}
 "aqua:joshmedeski/sesh" = "latest"
-"aqua:doy/rbw" = "latest"
 {{ end -}}
 {{ if and .gui (ne .chezmoi.os "windows") -}}
 "github:tinted-theming/tinty" = "latest"
+{{ end -}}
+{{ if eq .chezmoi.os "linux" -}}
+btop = "latest"
+"aqua:doy/rbw" = "latest"
 {{ end -}}

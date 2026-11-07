@@ -80,7 +80,7 @@ On other machines, `chezmoi update` pulls and applies, and `mise up` updates the
 | [lazygit](https://github.com/jesseduffield/lazygit), [delta](https://dandavison.github.io/delta/) | Git TUI (`lg`) and readable diffs |
 | [sesh](https://github.com/joshmedeski/sesh) | Session picker. `Ctrl-B T` in tmux |
 | [doggo](https://doggo.mrkaran.dev), [trippy](https://trippy.cli.rs) | DNS lookups, and a traceroute + ping TUI |
-| [rbw](https://github.com/doy/rbw) | Bitwarden CLI. Needs a pinentry program, see below |
+| [rbw](https://github.com/doy/rbw) | Bitwarden CLI (mise on Linux, brew on macOS). Needs a pinentry program, see below |
 
 **rbw needs a pinentry program** to ask for your master password. Nothing installs one for you, so without it `rbw unlock` fails with a pinentry error. Install one for your setup:
 

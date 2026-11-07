@@ -49,7 +49,8 @@ On other machines, `chezmoi update` pulls and applies, and `mise up` updates the
 | | What it does |
 |---|---|
 | [zsh](https://zsh.sourceforge.io/Doc/) | The shell, with a 100k-entry shared history |
-| [Starship](https://starship.rs/config/) | One-line prompt that shows only what matters right now |
+| [Powerlevel10k](https://github.com/romkatv/powerlevel10k) | The prompt on Linux and macOS. Settings are in `~/.config/zsh/.p10k.zsh` |
+| [Starship](https://starship.rs/config/) | The prompt on Windows (PowerShell) |
 | [fzf-tab](https://github.com/Aloxaf/fzf-tab) | Tab completion as a fuzzy menu |
 | [zsh-autopair](https://github.com/hlissner/zsh-autopair) | Auto-closes `(`, `[` and quotes |
 | [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) | Commands turn red before you hit Enter if they don't exist |

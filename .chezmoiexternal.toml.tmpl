@@ -1,6 +1,6 @@
 {{- /* archive externals: no git needed, refreshed by `chezmoi update` every week */ -}}
 {{ if ne .chezmoi.os "windows" -}}
-{{ range $name, $repo := dict "fzf-tab" "Aloxaf/fzf-tab" "zsh-autopair" "hlissner/zsh-autopair" "zsh-syntax-highlighting" "zsh-users/zsh-syntax-highlighting" -}}
+{{ range $name, $repo := dict "fzf-tab" "Aloxaf/fzf-tab" "zsh-autopair" "hlissner/zsh-autopair" "zsh-syntax-highlighting" "zsh-users/zsh-syntax-highlighting" "powerlevel10k" "romkatv/powerlevel10k" -}}
 [".config/zsh/plugins/{{ $name }}"]
     type = "archive"
     url = "https://github.com/{{ $repo }}/archive/HEAD.tar.gz"

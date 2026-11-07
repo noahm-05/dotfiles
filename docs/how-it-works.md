@@ -82,7 +82,8 @@ chezmoi stores a hash of each script it has run. When the tool list (including t
 | zsh bootstrap | `dot_zshenv` | `~/.zshenv` | Linux, macOS |
 | zsh config | `dot_config/zsh/{dot_zshrc,aliases.zsh,functions.zsh}` | `~/.config/zsh/` | Linux, macOS |
 | zsh plugins | `.chezmoiexternal` | `~/.config/zsh/plugins/` | Linux, macOS |
-| Prompt | `dot_config/starship.toml` | `~/.config/starship.toml` | all |
+| Prompt (zsh) | `dot_config/zsh/dot_p10k.zsh` + the p10k external | `~/.config/zsh/.p10k.zsh` | Linux, macOS |
+| Prompt (PowerShell) | `dot_config/starship.toml` | `~/.config/starship.toml` | Windows |
 | tmux | `dot_config/tmux/tmux.conf` | `~/.config/tmux/` | Linux, macOS |
 | nano | `dot_config/nano/nanorc` | `~/.config/nano/` | Linux, macOS |
 | Neovim | external + `palette.lua.tmpl`, `plugin/custom.lua`, `lua/custom/` | `~/.config/nvim/` | Linux, macOS |
@@ -123,10 +124,10 @@ Headless servers need **no** palette: ANSI colors are drawn by the terminal you 
 2. **History:** 100k entries in `$XDG_STATE_HOME/zsh/history`. `EXTENDED_HISTORY` stores timestamps (useful for report timelines). `SHARE_HISTORY` syncs across panes. `HIST_IGNORE_SPACE` lets you keep a secret out of history by starting the command with a space. `HIST_IGNORE_ALL_DUPS` removes repeats.
 3. **PATH:** `~/.local/bin` first (where mise lives), `/usr/sbin` last. `typeset -U path` de-duplicates.
 4. **Completion:** `compinit` with its dump cached in `$XDG_CACHE_HOME`. The full security check runs at most once a day; otherwise `-C` skips it. This is the main startup-time saver.
-5. **Tool inits, each guarded by `(( $+commands[x] ))`:** mise, zoxide, fzf, starship. If a tool is missing the line is skipped, which is the "degrade gracefully" mechanism. `bat` sets `BAT_THEME=ansi` and the man pager.
+5. **Tool inits, each guarded by `(( $+commands[x] ))`:** mise, zoxide, fzf. If a tool is missing the line is skipped, which is the "degrade gracefully" mechanism. `bat` sets `BAT_THEME=ansi` and the man pager.
 6. **Aliases and functions** are sourced after the inits so their guards see mise's PATH.
 7. **Plugins** (load order matters): fzf-tab → zsh-autopair → zsh-syntax-highlighting (must be last).
-8. **Fallback prompt** if Starship is absent: `~ ❯` with the arrow green on success, red on failure.
+8. **Prompt:** Powerlevel10k is sourced from `plugins/powerlevel10k`, with an instant-prompt block at the very top of `.zshrc`. If p10k is missing, a plain fallback prompt is used: `~ ❯` with the arrow green on success, red on failure.
 9. **rbw SSH agent:** exports `SSH_AUTH_SOCK` only if `rbw` exists.
 10. **`local.zsh`:** machine-only overrides, sourced if present.
 
@@ -159,7 +160,10 @@ An earlier setup aliased `df` to `duf` and broke pasted commands. The rule now: 
 
 The ≤ 5 line rule enforces "no custom programs": if something needs more, a tool should already exist for it.
 
-## 4. Prompt: Starship
+## 4. Prompt: Powerlevel10k (zsh) and Starship (PowerShell)
+
+On Linux and macOS the prompt is Powerlevel10k, kept as an archive external and configured by `dot_config/zsh/dot_p10k.zsh`. Starship is used only on Windows, where p10k doesn't run. The rest of this section describes Starship.
+
 
 One line, no newline gap. Shows only what is useful at that moment:
 

@@ -3,6 +3,10 @@
 Assumptions and decisions made while building from plan.md. Nothing here was run
 against a real home directory.
 
+## Prompt change
+
+After the first build, zsh on Linux/macOS switched from Starship to Powerlevel10k (config copied from the old dotbot repo). Starship stays on Windows only; its `tun0` module was dropped.
+
 ## Decisions from Noah
 - nvim: kickstart.nvim is an `archive` external into `~/.config/nvim`; `palette.lua.tmpl`,
   `plugin/custom.lua` and `lua/custom/init.lua` are overlay files.

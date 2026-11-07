@@ -9,7 +9,6 @@ yazi = "latest"
 jq = "latest"
 tealdeer = "latest"
 neovim = "latest"
-starship = "latest"
 lazygit = "latest"
 delta = "latest"
 doggo = "latest"
@@ -19,6 +18,9 @@ doggo = "latest"
 {{ end -}}
 {{ if and .gui (ne .chezmoi.os "windows") -}}
 "github:tinted-theming/tinty" = "latest"
+{{ end -}}
+{{ if eq .chezmoi.os "windows" -}}
+starship = "latest"
 {{ end -}}
 {{ if eq .chezmoi.os "linux" -}}
 btop = "latest"

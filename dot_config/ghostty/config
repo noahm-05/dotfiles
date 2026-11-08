@@ -10,3 +10,6 @@ shell-integration-features = ssh-terminfo,ssh-env
 macos-option-as-alt = true
 window-padding-x = 6
 window-padding-y = 4
+# slim top bar: GNOME header bar off, macOS title bar hidden (each ignored on the other OS)
+gtk-titlebar = false
+macos-titlebar-style = hidden

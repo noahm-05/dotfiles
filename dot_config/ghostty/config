@@ -10,10 +10,10 @@ shell-integration-features = ssh-terminfo,ssh-env
 macos-option-as-alt = true
 window-padding-x = 6
 window-padding-y = 4
-# top bar: tabs merged into a slim titlebar that takes the terminal colors (macOS: title bar hidden)
+# top bar: tabs merged into a slim titlebar that takes the terminal colors (GTK and macOS)
 gtk-titlebar = true
 gtk-titlebar-style = tabs
 gtk-toolbar-style = flat
 gtk-wide-tabs = false
 window-theme = ghostty
-macos-titlebar-style = hidden
+macos-titlebar-style = tabs

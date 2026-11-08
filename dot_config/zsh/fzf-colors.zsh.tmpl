@@ -1,3 +1,0 @@
-{{- /* base16 -> fzf, same mapping as tinted-fzf, from the one palette copy */ -}}
-{{- $p := .palette -}}
-export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --color=bg+:{{ $p.base01 }},bg:{{ $p.base00 }},spinner:{{ $p.base0C }},hl:{{ $p.base0D }} --color=fg:{{ $p.base04 }},header:{{ $p.base0D }},info:{{ $p.base0A }},pointer:{{ $p.base0C }} --color=marker:{{ $p.base0C }},fg+:{{ $p.base06 }},prompt:{{ $p.base0A }},hl+:{{ $p.base0D }}"

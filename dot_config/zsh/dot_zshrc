@@ -13,11 +13,20 @@ setopt EXTENDED_HISTORY SHARE_HISTORY HIST_IGNORE_SPACE HIST_IGNORE_ALL_DUPS
 
 # 3. PATH (mise is activated below; shims are not used)
 typeset -U path
-path=($HOME/.local/bin $path /usr/sbin)
+path=($HOME/.local/bin $CARGO_HOME/bin $GOPATH/bin $HOME/.local/share/gem/ruby/*/bin(N) $path /usr/sbin)
 # Homebrew: ~/.zprofile is ignored with ZDOTDIR, and Dock-launched terminals start with a bare PATH
 [[ -d /opt/homebrew/bin ]] && path=(/opt/homebrew/bin /opt/homebrew/sbin $path)
 
 # 4. completion: full check once a day, cached otherwise
+setopt COMPLETE_IN_WORD ALWAYS_TO_END
+(( $+commands[dircolors] )) && eval "$(dircolors -b)"
+fpath=($XDG_DATA_HOME/zsh/completions $fpath)
+zmodload zsh/complist
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} 'ma=7'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%F{cyan}-- %d --%f'
 autoload -Uz compinit
 _zcd=$XDG_CACHE_HOME/zsh/zcompdump
 mkdir -p ${_zcd:h}
@@ -28,6 +37,7 @@ unset _zcd
 (( $+commands[mise] ))     && eval "$(mise activate zsh)"
 (( $+commands[zoxide] ))   && eval "$(zoxide init zsh)"
 (( $+commands[fzf] ))      && source <(fzf --zsh)
+source $ZDOTDIR/fzf-colors.zsh
 if (( $+commands[bat] )); then
   export BAT_THEME=ansi MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
